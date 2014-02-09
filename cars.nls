@@ -53,6 +53,8 @@ to spawnCar
       set carcount (carcount + 1)
       set carsspawned (carsspawned + 1)
       set birthtime tickcount
+      set hopCount 1
+      set leader false
     ]
   ];else
   [
@@ -66,6 +68,10 @@ to gocars
     ifelse (cars-ahead (heading) > 0)
     [
       ; Stau
+      set leader false
+      if (cognestion = false)[
+        communicate heading
+      ]
       stopcar
     ];else kein Stau
     [
@@ -89,6 +95,8 @@ to gocars
       ];else Linkende noch nicht erreicht
       [
         move
+        set hopCount 1
+        set leader true 
       ]
     ]
   ]
@@ -132,6 +140,31 @@ to diecar
       die
   ]
 end
+
+to communicate [myheading]
+  tellJunction
+  ask ( other cars with [heading < myheading + 20 AND heading > myheading - 20] in-cone .5 40 )[
+    set hopCount (hopCount + 1)
+    print hopCount
+    communicate(heading) 
+  ]
+end
+
+to tellJunction
+  if (leader)[
+    ;falls leder = true : setzte cogNr = hopCount
+    ;die junktion 
+   ; let a  street with part_of_junction)
+    ask [part_of_junction] of street
+        [
+      set queue hopCount
+      ;set queuepos [part_of_junction] of street
+      
+    ]   
+  ]
+  
+end    
+  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
@@ -172,3 +205,6 @@ to-report link-of [lat nt]
   report one-of (links with [end1 = lat]) with [end2 = nt]
 ;   ([who] of lat) ([who] of nt)
 end
+
+ 
+  

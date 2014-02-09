@@ -1,5 +1,5 @@
 breed [junctions junction]
-junctions-own [jc]
+junctions-own [jc queue queuepos]
 
 to toggle-light [light] 
   let a light
