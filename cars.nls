@@ -1,5 +1,11 @@
+globals [carcount carsspawned]
+
 breed [cars car]
-cars-own[nextTarget cognestion lastTarget street]
+cars-own[nextTarget lastTarget street 
+        cognestion cognestion-time current-cognestion-time cognestion-count longest-cognestion
+        birthtime]
+
+
 
 to initcars
  create-cars 10
@@ -26,6 +32,8 @@ to initcars
     [ 
       die
     ]
+    set carcount ( count cars)
+    set carsspawned carcount
   ]
 end
 
@@ -42,6 +50,9 @@ to spawnCar
       set street (link-of lastTarget nextTarget)
       face nextTarget
       set cognestion false
+      set carcount (carcount + 1)
+      set carsspawned (carsspawned + 1)
+      set birthtime tickcount
     ]
   ];else
   [
@@ -51,9 +62,7 @@ end
 
 to gocars
   ask cars [
-    if(nextTarget = nobody) [
-      die
-    ]
+    diecar
     ifelse (cars-ahead (heading) > 0)
     [
       ; Stau
@@ -87,6 +96,12 @@ end
 
 
 to move
+  if (cognestion)[
+    if longest-cognestion < current-cognestion-time [
+      set longest-cognestion current-cognestion-time 
+    ]
+    set current-cognestion-time 0
+  ]
   face nextTarget
   forward .1
   set color blue
@@ -94,17 +109,28 @@ to move
 end
 
 to stopcar
-  set cognestion true
+  if (not cognestion) [
+    set cognestion true
+    set cognestion-count (cognestion-count + 1)
+  ]
+  set cognestion-time (cognestion-time + 1) 
+  set current-cognestion-time ( current-cognestion-time + 1)
   set color orange
 end
 
 to updateTarget
   set lastTarget nextTarget
   set nextTarget one-of [out-link-neighbors] of nextTarget
-  if(nextTarget = nobody) [
-    die
-  ]
+  diecar
   set street (link-of lastTarget nextTarget)
+end
+
+to diecar
+  if(nextTarget = nobody) [
+      set carcount ( carcount - 1)
+      log-car-death lastTarget cognestion-time cognestion-count longest-cognestion birthtime tickcount
+      die
+  ]
 end
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

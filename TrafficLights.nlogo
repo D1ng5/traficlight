@@ -1,19 +1,22 @@
-__includes ["Shape2Logo.nls" "junctionControl.nls" "cars.nls"]
+__includes ["Shape2Logo.nls" "junctionControl.nls" "cars.nls" "log.nls"]
 
 globals [
   junction_1 junction_2 junction_3
   light_1 light_2 light_3 light_4 light_5 light_6 light_7 light_8
+  tickcount
   ]
 
 links-own [is_light part_of_junction next_light is_active]
 
 
 to go 
+  set tickcount (tickcount + 1)
   jgo
   gocars
   if random 100 < spawn-propabilty [
-  ;  spawnCar
+    spawnCar
   ]
+  
 end
 
 to init
@@ -83,7 +86,9 @@ to init
     set is_active true
   ]
   reset-ticks
+  init-car-log
   ;initcars
+  
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
@@ -138,8 +143,8 @@ SLIDER
 jtt1
 jtt1
 0
+60
 30
-15
 1
 1
 NIL
@@ -153,8 +158,8 @@ SLIDER
 jtt2
 jtt2
 0
+60
 30
-10
 1
 1
 NIL
@@ -168,8 +173,8 @@ SLIDER
 jtt3
 jtt3
 0
+60
 30
-10
 1
 1
 NIL
@@ -213,7 +218,7 @@ BUTTON
 468
 459
 kill cars in cognestion
-ask cars with [cognestion = true] [die]
+set carcount carcount - count cars with [cognestion = true]\nask cars with [cognestion = true] [die]
 NIL
 1
 T
@@ -240,6 +245,50 @@ NIL
 NIL
 NIL
 1
+
+MONITOR
+288
+95
+345
+140
+# cars
+carcount
+17
+1
+11
+
+MONITOR
+379
+731
+480
+776
+NIL
+carsspawned
+17
+1
+11
+
+MONITOR
+251
+731
+372
+776
+cars in cognestion
+count cars with [cognestion = true]
+17
+1
+11
+
+MONITOR
+297
+335
+368
+380
+NIL
+tickcount
+17
+1
+11
 
 @#$#@#$#@
 ## WHAT IS IT?

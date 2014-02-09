@@ -1,0 +1,63 @@
+globals [log-car-file openfile]
+
+to init-car-log
+  let car-log-name (word "carlog-" (daytime "dt") ".csv")
+  ; für jeweiliges System einkommentieren
+  ; window system
+  ;set carlog (word "log\\" car-log-name)
+  ; linux System
+  set log-car-file (word "log/" car-log-name)
+  file-open log-car-file
+  file-print "deathtime ; birthtime ; lastTarget ; cognestion-count ; cognestion-time ; longest-cognestion"
+end
+
+
+;Prameters: lastTarget cognestion-time cognestion-count longest-cognestion birthtime deathtime
+to log-car-death [lTgt cog-time cog-count max-cog birtht deatht]
+  file-open log-car-file
+  file-print (word       deatht 
+                   " ; " birtht
+                   " ; " lTgt 
+                   " ; " cog-count
+                   " ; " cog-time
+                   " ; " max-cog
+              )
+  close
+end
+
+
+
+to close
+  file-close
+end
+
+
+
+to-report daytime [ops] 
+  ; current date and time in numerical format, yyyy-mm-dd
+  let dateandtime date-and-time
+  let $dt substring dateandtime 16 27  ; "21-May-2013"
+  let dt (word (substring $dt 7 11)           ; yyyy
+           "-" (month-num substring $dt 3 6)  ; mm
+           "-" (substring $dt 0 2) )          ; dd
+  let time (word (substring dateandtime 0 2)   ; h
+             ":" (substring dateandtime 3 5) ) ; m
+  ifelse (ops = "d") [
+    report dt
+  ];else
+  [
+    ifelse (ops = "t") [
+      report time
+    ];else (ops = "dt")
+    [
+      report (word dt "_" time)
+    ]
+    
+  ]
+end 
+
+to-report month-num [ #mon ]
+  let $index 1 + position #mon
+    ["Jan""Feb""Mar""Apr""May""Jun""Jul""Aug""Sep""Oct""Nov""Dec"]
+  report substring (word (100 + $index)) 1 3  ; force 2-digit string
+end 
