@@ -1,0 +1,62 @@
+breed [junctions junction]
+junctions-own [jc]
+
+to toggle-light [light] 
+  let a light
+  ifelse [is_active] of a [
+    ask a [
+      set color red
+      set is_active false
+    ]
+  ];else
+  [
+    ask a [
+      set color green
+      set is_active true
+    ]
+  ]
+end
+
+to tl 
+  ifelse is_active [
+      set color red
+      set is_active false
+  ];else
+  [
+      set color green
+      set is_active true
+  ]
+end
+
+to jgo
+  foreach sort junctions [
+    ask ? [
+      ifelse jc < 0 [
+        set jc (get-jtt (?))
+        ask links with [is_active = true and part_of_junction = ? ][
+          tl
+          ask next_light [
+            tl
+          ]  
+        ]
+      ];else
+      [
+        set jc (jc - 1)
+      ]  
+    ] 
+  ]
+end
+
+to-report get-jtt [junction]
+  let re 0
+  if junction = junction_1 [
+    set re jtt1
+  ]
+  if junction = junction_2 [
+    set re jtt2 
+  ]
+  if junction = junction_3 [
+    set re jtt3 
+  ]
+  report re
+end

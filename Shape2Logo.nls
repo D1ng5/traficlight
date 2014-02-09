@@ -1,0 +1,82 @@
+extensions[gis]
+
+globals[minx maxx miny maxy]
+
+breed [nodes node]
+nodes-own[start_node processed]
+
+to setup_world[minimumx maximumx minimumy maximumy]
+  set minx minimumx
+  set maxx maximumx
+  set miny minimumy
+  set maxy maximumy
+  gis:set-transformation (list minx maxx miny maxy) (list min-pxcor max-pxcor min-pycor max-pycor)
+end
+
+to setup_roadnetwork
+  clear-all
+  setup_world 3548844 3550246 5803780 5805405
+  createRoadNetwork "Straßennetz.shp" 
+end
+
+to createRoadNetwork[shapefile]
+  let roads gis:load-dataset shapefile
+  foreach gis:feature-list-of roads [
+    let first_element true
+    let previous nobody
+    foreach gis:vertex-lists-of ? [
+      foreach ? [
+        let pos gis:location-of ?
+        if length pos = 2 [ 
+          ifelse first_element [
+            set first_element false
+            let node getExistingNode item 0 pos item 1 pos ?
+            ifelse node = nobody [
+              create-nodes 1 [
+                set xcor item 0 pos
+                set ycor item 1 pos
+                set processed false
+                set start_node true
+                set previous self
+                set size 0
+              ]  
+            ];else 
+            [
+              ask node [set size 0]
+              set previous node
+            ]
+          ];else 
+          [
+            let node getExistingNode item 0 pos item 1 pos ?
+            ifelse node != nobody [
+              ask previous [create-link-to node]
+              set previous node
+              ask node [set start_node false]
+            ];else
+            [  
+              create-nodes 1 [
+                create-link-from previous
+                set xcor item 0 pos
+                set ycor item 1 pos
+                set processed false
+                set start_node false
+                set previous self
+                set size 0
+              ]
+            ]
+          ]
+        ]            
+      ]
+    ]
+  ]
+end
+
+to-report getExistingNode[x y node]
+  foreach sort nodes [
+    if x = [xcor] of ? and y = [ycor] of ? and node != ? [
+      report ?
+    ]
+  ]
+  report nobody
+end
+

@@ -1,0 +1,148 @@
+breed [cars car]
+cars-own[nextTarget cognestion lastTarget street]
+
+to initcars
+ create-cars 10
+    ask cars [
+    set size 0.75
+    set color blue 
+  ;  set shape "bettercar"
+    let rndNode one-of nodes
+    set xcor [xcor] of rndNode
+    set ycor [ycor] of rndNode
+ 
+    set cognestion false
+    ifelse (count cars in-radius 0 = 1  ) [
+      ifelse (one-of [out-link-neighbors] of rndNode = nobody) 
+      [
+        show "end. removing turtle." die
+      ];else
+      [
+        set nextTarget one-of [out-link-neighbors] of rndNode
+        set lastTarget [end1] of one-of ([my-in-links] of nextTarget)
+        face nextTarget
+      ]
+    ];else
+    [ 
+      die
+    ]
+  ]
+end
+
+to spawnCar
+  let rndNode one-of nodes with [count in-link-neighbors = 0] with [count cars in-radius .3 = 0]
+  ifelse (not (rndNode = nobody)) [
+    create-cars 1 [
+      set size 0.75
+      set color blue
+      set xcor [xcor] of rndNode
+      set ycor [ycor] of rndNode
+      set nextTarget one-of [out-link-neighbors] of rndNode
+      set lastTarget [end1] of one-of ([my-in-links] of nextTarget)
+      set street (link-of lastTarget nextTarget)
+      face nextTarget
+      set cognestion false
+    ]
+  ];else
+  [
+    show "all startnodes full"
+  ]
+end
+
+to gocars
+  ask cars [
+    if(nextTarget = nobody) [
+      die
+    ]
+    ifelse (cars-ahead (heading) > 0)
+    [
+      ; Stau
+      stopcar
+    ];else kein Stau
+    [
+      ifelse ( (d_euclidean poslst (pos-of nextTarget)) < .1 ) [
+        ;Link ende erreicht
+       ; let street (link-of lastTarget nextTarget)
+        ifelse [is_light] of street [ 
+          ;Link ist ampel
+          ifelse [is_active] of street [
+            ;die Ampel ist grün
+            updateTarget
+            move  
+          ];else die ampel ist rot
+          [
+            stopcar
+          ]
+        ];else Link ist keine Ampel
+        [
+          updateTarget
+        ]
+      ];else Linkende noch nicht erreicht
+      [
+        move
+      ]
+    ]
+  ]
+end
+
+
+to move
+  face nextTarget
+  forward .1
+  set color blue
+  set cognestion false
+end
+
+to stopcar
+  set cognestion true
+  set color orange
+end
+
+to updateTarget
+  set lastTarget nextTarget
+  set nextTarget one-of [out-link-neighbors] of nextTarget
+  if(nextTarget = nobody) [
+    die
+  ]
+  set street (link-of lastTarget nextTarget)
+end
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+
+to-report nextcors [r phi]
+ let x xcor + (r * sin (phi))
+ let y ycor + (r * cos (phi))
+ report list x y
+end
+
+to-report euclidean_distance[x1 y1 x2 y2]
+  report sqrt ((x2 - x1) ^ 2 + (y2 - y1) ^ 2)
+end
+
+to-report d_euclidean[p1 p2]
+  report sqrt ((first p2 - first p1) ^ 2 + (last p2 - last p1) ^ 2)
+end
+
+to-report poslst
+  report list xcor ycor
+end
+
+to-report pos-of [thing]
+  report list ([xcor] of thing) ([ycor] of thing)
+end
+
+to-report cars-ahead [myheading]
+  let c count other cars with [heading < myheading + 20 AND heading > myheading - 20] in-cone .5 40 
+  let myxcor xcor
+  let myycor ycor
+  if (0 < count other cars with [xcor = myxcor and ycor = myycor])[
+    set c 0
+  ]
+  report c 
+end 
+
+to-report link-of [lat nt]
+  report one-of (links with [end1 = lat]) with [end2 = nt]
+;   ([who] of lat) ([who] of nt)
+end
