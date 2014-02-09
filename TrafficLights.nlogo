@@ -41,18 +41,19 @@ to init
   set light_1 link  1  2
   set light_2 link 28 29
   ask junction_1 [set jc 15] 
+  ask junction_1 [set queue 0] 
   
   ;junction 2:
   set light_3 link  5  6
   set light_4 link 23 24
   set light_5 link 37 24
-  ask junction_2 [set jc 15]
+  ask junction_2 [set queue 0] 
   
   ;junction 3:
   set light_6 link  8  9
   set light_7 link 39 40
   set light_8 link 20 21
-  ask junction_3 [set jc 15]
+  ask junction_3 [set queue 0] 
   
   ask light_1 [set is_light true set part_of_junction junction_1 set next_light light_2]
   ask light_2 [set is_light true set part_of_junction junction_1 set next_light light_1]
@@ -154,7 +155,7 @@ jtt2
 jtt2
 0
 30
-10
+18
 1
 1
 NIL
@@ -201,7 +202,7 @@ spawn-propabilty
 spawn-propabilty
 0
 100
-10
+20
 1
 1
 NIL
@@ -584,7 +585,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.0.5
+NetLogo 5.0.4
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
