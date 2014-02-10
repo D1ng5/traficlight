@@ -1,11 +1,12 @@
-globals [carcount carsspawned]
+globals [carcount carsspawned Lin Lout mescars summestimes ]
 
 breed [cars car]
 cars-own[nextTarget lastTarget street 
-        cognestion cognestion-time current-cognestion-time cognestion-count longest-cognestion
-        birthtime]
-
-
+         hopCount leader
+         cognestion cognestion-time current-cognestion-time cognestion-count longest-cognestion
+         birthtime
+         mes fo it ot
+         ]
 
 to initcars
  create-cars 10
@@ -55,6 +56,7 @@ to spawnCar
       set birthtime tickcount
       set hopCount 1
       set leader false
+      inittestcar
     ]
   ];else
   [
@@ -62,22 +64,45 @@ to spawnCar
   ]
 end
 
+to create-car-at [spawnNode]
+  ifelse [count cars in-radius .3 = 0] of spawnNode [
+    create-cars 1 [
+      set size 0.75
+      set color blue
+      set xcor [xcor] of spawnNode
+      set ycor [ycor] of spawnNode
+      set nextTarget one-of [out-link-neighbors] of spawnNode
+      set lastTarget [end1] of one-of ([my-in-links] of nextTarget)
+      set street (link-of lastTarget nextTarget)
+      face nextTarget
+      set cognestion false
+      set carcount (carcount + 1)
+      set carsspawned (carsspawned + 1)
+      set birthtime tickcount
+      set hopCount 1
+      set leader false
+      inittestcar
+    ]
+  ]
+  [
+    print word "no space for creating a car at: " spawnNode
+  ]
+end
+
 to gocars
   ask cars [
+    if roadtests [testline]
     diecar
     ifelse (cars-ahead (heading) > 0)
     [
       ; Stau
       set leader false
-      if (cognestion = false)[
-        communicate heading
-      ]
       stopcar
     ];else kein Stau
     [
       ifelse ( (d_euclidean poslst (pos-of nextTarget)) < .1 ) [
         ;Link ende erreicht
-       ; let street (link-of lastTarget nextTarget)
+        ; let street (link-of lastTarget nextTarget)
         ifelse [is_light] of street [ 
           ;Link ist ampel
           ifelse [is_active] of street [
@@ -94,9 +119,7 @@ to gocars
         ]
       ];else Linkende noch nicht erreicht
       [
-        move
-        set hopCount 1
-        set leader true 
+        move 
       ]
     ]
   ]
@@ -114,10 +137,13 @@ to move
   forward .1
   set color blue
   set cognestion false
+  set hopCount 1
+  set leader true 
 end
 
 to stopcar
   if (not cognestion) [
+   ; communicate heading
     set cognestion true
     set cognestion-count (cognestion-count + 1)
   ]
@@ -141,30 +167,29 @@ to diecar
   ]
 end
 
-to communicate [myheading]
-  tellJunction
-  ask ( other cars with [heading < myheading + 20 AND heading > myheading - 20] in-cone .5 40 )[
-    set hopCount (hopCount + 1)
-    print hopCount
-    communicate(heading) 
-  ]
-end
-
-to tellJunction
-  if (leader)[
-    ;falls leder = true : setzte cogNr = hopCount
-    ;die junktion 
-   ; let a  street with part_of_junction)
-    ask [part_of_junction] of street
-        [
-      set queue hopCount
-      ;set queuepos [part_of_junction] of street
-      
-    ]   
-  ]
-  
-end    
-  
+;to communicate [myheading]
+;  tellJunction
+;  ask ( other cars with [heading < myheading + 20 AND heading > myheading - 20] in-cone .5 40 )[
+;    set hopCount (hopCount + 1)
+;    print hopCount
+;    communicate(heading) 
+;  ]
+;end
+;
+;to tellJunction
+;  if (leader)[
+;    ;falls leder = true : setzte cogNr = hopCount
+;    ;die junktion 
+;    ; let a  street with part_of_junction)
+;    let a hopCount
+;    ask [part_of_junction] of street
+;      [
+;        set queue a
+;        ;set queuepos [part_of_junction] of street
+;      ]   
+;  ]  
+;end    
+;  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
@@ -205,6 +230,49 @@ to-report link-of [lat nt]
   report one-of (links with [end1 = lat]) with [end2 = nt]
 ;   ([who] of lat) ([who] of nt)
 end
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;                      road tests
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+to init-road-test [road]
+  if road = "AB" [inittest link  2  3 link  5  6]
+  if road = "CD" [inittest link  6  7 link  8  9]
+  if road = "EG" [inittest link 40 21 link 23 24]
+  if road = "FG" [inittest link 21 22 link 23 24]
+  if road = "HI" [inittest link 24 25 link 28 29]
+  print word "inisalized mesuring for road: " road
+end
+
+to inittest [li lo]
+  set Lin li
+  set Lout lo
+  set mescars 0
+  set summestimes 0
+end 
+
+to inittestcar
+  set mes false
+  set fo false
+  set it 0
+  set ot 0
+end
+
+to testline
+  if (street = Lin and not mes) [
+      set mes true
+      set it tickcount
+  ]
+  if (street = Lout and not fo) [
+    set fo true    
+  ]
+  if (fo and (not (street = Lout))) [
+    set ot tickcount
+    print (word " mesured travel time = " (ot - it ) " ticks by (" who " " breed ") on road: " test-road) 
+    set mes false 
+    set fo false
+    set summestimes (summestimes + (ot - it))
+    set mescars (mescars + 1)
+  ]
+end
  
   

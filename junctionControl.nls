@@ -1,5 +1,97 @@
 breed [junctions junction]
 junctions-own [jc queue queuepos]
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;                          initialize
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+to junction-init
+  if szenario = "indian"     [init-indian     ]
+  if szenario = "constant"   [init-constant   ]
+  if szenario = "traffic"    [init-traffic    ]
+  if szenario = "cooperativ" [init-cooperativ ]
+end
+
+to init-indian
+  ask links with [is_light = true][set color black set is_active true]
+end
+
+to init-constant
+   ask light_1 [
+    set color green
+    set is_active true
+  ]
+  ask junction_1 [set jc 24] ;geenwave 26 
+  ask light_5 [
+    set color green
+    set is_active true
+  ] 
+  ask junction_2 [set jc 11] ;; geenwave 12
+  ask light_7 [
+    set color green
+    set is_active true
+  ] 
+  ask junction_3 [set jc 30] 
+end
+
+to init-traffic
+  
+end
+
+to init-cooperativ
+
+end
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;                      go functions
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+to jgo
+  if szenario = "indian"     [              ];indian all lights ar green no toggeling
+  if szenario = "constant"   [jt-constant   ]
+  if szenario = "traffic"    [jt-traffic    ]
+  if szenario = "cooperativ" [jt-cooperativ ]
+end
+
+to jt-constant
+  foreach sort junctions [
+    ask ? [
+      ifelse jc <= 1 [
+        set jc (get-jtt (?))
+        ask links with [is_active = true and part_of_junction = ? ][
+          tl
+          ask next_light [
+            tl
+          ]  
+        ]
+      ];else
+      [
+        set jc (jc - 1)
+      ]  
+    ] 
+  ]
+end
+
+to jt-traffic
+
+end
+
+to jt-cooperativ
+
+end
+ 
+ 
+
+to-report get-jtt [junction]
+  let re 0
+  if junction = junction_1 [
+    set re jtt1
+  ]
+  if junction = junction_2 [
+    set re jtt2 
+  ]
+  if junction = junction_3 [
+    set re jtt3 
+  ]
+  report re
+end
 
 to toggle-light [light] 
   let a light
@@ -26,37 +118,4 @@ to tl
       set color green
       set is_active true
   ]
-end
-
-to jgo
-  foreach sort junctions [
-    ask ? [
-      ifelse jc < 0 [
-        set jc (get-jtt (?))
-        ask links with [is_active = true and part_of_junction = ? ][
-          tl
-          ask next_light [
-            tl
-          ]  
-        ]
-      ];else
-      [
-        set jc (jc - 1)
-      ]  
-    ] 
-  ]
-end
-
-to-report get-jtt [junction]
-  let re 0
-  if junction = junction_1 [
-    set re jtt1
-  ]
-  if junction = junction_2 [
-    set re jtt2 
-  ]
-  if junction = junction_3 [
-    set re jtt3 
-  ]
-  report re
 end

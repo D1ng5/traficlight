@@ -13,13 +13,17 @@ to go
   set tickcount (tickcount + 1)
   jgo
   gocars
-  if random 100 < spawn-propabilty [
-    spawnCar
-  ]
-  
+  if (random 100 < spawn-propabilty) [spawnCar]
 end
 
 to init
+  init-roadnetwork
+  junction-init
+  init-car-log
+  ;initcars
+end
+
+to init-roadnetwork
   setup_roadnetwork
   
   ask patches [
@@ -73,24 +77,9 @@ to init
     set color red
     set is_active false
   ]
-  
-  ask light_1 [
-    set color green
-    set is_active true
-  ]
-  ask light_3 [
-    set color green
-    set is_active true
-  ]
-  ask light_6 [
-    set color green
-    set is_active true
-  ]
   reset-ticks
-  init-car-log
-  ;initcars
-  
-end
+end   
+
 @#$#@#$#@
 GRAPHICS-WINDOW
 500
@@ -120,10 +109,10 @@ ticks
 30.0
 
 BUTTON
-309
-52
-393
-85
+146
+10
+201
+55
 NIL
 init
 NIL
@@ -182,10 +171,10 @@ NIL
 HORIZONTAL
 
 BUTTON
-364
-105
-467
-139
+7
+66
+110
+100
 NIL
 spawnCar
 NIL
@@ -199,15 +188,15 @@ NIL
 1
 
 SLIDER
-289
-147
-468
-180
+7
+101
+186
+134
 spawn-propabilty
 spawn-propabilty
 0
 100
-20
+10
 1
 1
 NIL
@@ -231,10 +220,10 @@ NIL
 1
 
 BUTTON
-415
-54
-478
-87
+204
+10
+259
+55
 NIL
 go
 T
@@ -248,21 +237,21 @@ NIL
 1
 
 MONITOR
-288
-95
-345
-140
-# cars
+372
+349
+491
+394
+cars on street
 carcount
 17
 1
 11
 
 MONITOR
-379
-731
-480
-776
+372
+302
+492
+347
 NIL
 carsspawned
 17
@@ -270,10 +259,10 @@ carsspawned
 11
 
 MONITOR
-251
-731
-372
-776
+249
+349
+370
+394
 cars in cognestion
 count cars with [cognestion = true]
 17
@@ -281,15 +270,153 @@ count cars with [cognestion = true]
 11
 
 MONITOR
-297
-335
-368
-380
+249
+301
+369
+346
 NIL
 tickcount
 17
 1
 11
+
+BUTTON
+199
+747
+389
+780
+NIL
+create-car-at node 19
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+BUTTON
+3
+747
+193
+780
+NIL
+create-car-at node 38
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+BUTTON
+154
+706
+344
+739
+NIL
+create-car-at node 37\n
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+BUTTON
+4
+666
+194
+699
+NIL
+create-car-at node 0
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+MONITOR
+133
+614
+204
+659
+NIL
+mescars
+17
+1
+11
+
+MONITOR
+7
+614
+127
+659
+mean traveltime
+summestimes / mescars
+17
+1
+11
+
+CHOOSER
+6
+10
+144
+55
+szenario
+szenario
+"indian" "constant" "traffic" "cooperativ"
+0
+
+CHOOSER
+211
+614
+349
+659
+test-road
+test-road
+"AB" "CD" "EG" "FG" "HI"
+3
+
+BUTTON
+358
+618
+483
+651
+init road test
+init-road-test test-road
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+SWITCH
+8
+577
+135
+610
+roadtests
+roadtests
+1
+1
+-1000
 
 @#$#@#$#@
 ## WHAT IS IT?
@@ -634,7 +761,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.0.4
+NetLogo 5.0.5
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
