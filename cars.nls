@@ -6,7 +6,7 @@ breed [cars car]
 cars-own[
   nextTarget lastTarget street 
   hopCount leader
-  cognestion cognestion-time current-cognestion-time cognestion-count longest-cognestion
+  cognestion cognestion-time current-cognestion-time cognestion-count longest-cognestion average-cognestion-time
   birthtime
   mes fo it ot
 ]
@@ -56,7 +56,7 @@ to spawnCar
       set cognestion false
       set carcount (carcount + 1)
       set carsspawned (carsspawned + 1)
-      set birthtime tickcount
+      set birthtime ticks
       set hopCount 1
       set leader false
       inittestcar
@@ -81,7 +81,7 @@ to create-car-at [spawnNode]
       set cognestion false
       set carcount (carcount + 1)
       set carsspawned (carsspawned + 1)
-      set birthtime tickcount
+      set birthtime ticks
       set hopCount 1
       set leader false
       inittestcar
@@ -96,11 +96,9 @@ to gocars
   ask cars [
     if roadtests [testline]
     diecar
-    ifelse (cars-ahead (heading) > 0)
+    ifelse (count cars-ahead > 0)
     [
-      ; Stau
-      set leader false
-      stopcar
+      handle-car-ahead
     ];else kein Stau
     [
       ifelse ( (d_euclidean poslst (pos-of nextTarget)) < .1 ) [
@@ -128,12 +126,24 @@ to gocars
   ]
 end
 
+to handle-car-ahead
+  let myxcor xcor 
+  let myycor ycor
+  ifelse 0 < count other cars with [ xcor = myxcor and ycor = myycor] [
+    move 
+  ] 
+  [
+    set leader false
+    stopcar
+  ]
+end
 
 to move
   if (cognestion)[
     if longest-cognestion < current-cognestion-time [
       set longest-cognestion current-cognestion-time 
     ]
+    set average-cognestion-time (current-cognestion-time / cognestion-count)
     set current-cognestion-time 0
   ]
   face nextTarget
@@ -165,7 +175,7 @@ end
 to diecar
   if(nextTarget = nobody) [
       set carcount ( carcount - 1)
-      log-car-death lastTarget cognestion-time cognestion-count longest-cognestion birthtime tickcount
+      log-car-death lastTarget cognestion-time cognestion-count longest-cognestion birthtime ticks
       die
   ]
 end
@@ -196,6 +206,12 @@ end
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
+to test
+  let np (nextcors .2 heading)
+  let r .1
+  show count cars with [(((first np) - r) < xcor) and (xcor <((first np) + r)) and ( ((last np) - r) < ycor ) and ( ycor < ((last np) + r) )]
+end
+
 
 to-report nextcors [r phi]
  let x xcor + (r * sin (phi))
@@ -203,15 +219,13 @@ to-report nextcors [r phi]
  report list x y
 end
 
-
-to-report cars-ahead [myheading]
-  let c count other cars with [heading < myheading + 20 AND heading > myheading - 20] in-cone .5 40 
-  let myxcor xcor
-  let myycor ycor
-  if (0 < count other cars with [xcor = myxcor and ycor = myycor])[
-    set c 0
-  ]
-  report c 
+to-report cars-ahead 
+  let myheading heading
+  let angle 30
+  report other cars with [
+    ; autos Vorne 
+    heading < myheading + angle and heading > myheading - angle
+  ] in-cone .5 (2 * angle) 
 end 
 
 to-report link-of [lat nt]

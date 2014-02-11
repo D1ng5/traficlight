@@ -28,7 +28,7 @@ to init-roadnetwork
   ;junction 1:
   set light_1 link  1  2
   set light_2 link 28 29
-  ask junction_1 [set jc 15] 
+  
   ask junction_1 [set queue 0] 
   
   ;junction 2:
@@ -120,13 +120,13 @@ end
 to testline
   if (street = Lin and not mes) [
       set mes true
-      set it tickcount
+      set it ticks
   ]
   if (street = Lout and not fo) [
     set fo true    
   ]
   if (fo and (not (street = Lout))) [
-    set ot tickcount
+    set ot ticks
     print (word " mesured travel time = " (ot - it ) " ticks by (" who " " breed ") on road: " test-road) 
     set mes false 
     set fo false

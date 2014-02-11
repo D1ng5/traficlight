@@ -4,8 +4,6 @@ globals [
   maximal-cog sum-cog-times sum-cog-counts max-life-time sum-life-times deadcars
 ]
 
-
-
 to init-car-log
   if gnerate-file [
     let car-log-name (word "carlog-" (daytime "dt") ".csv")
@@ -19,7 +17,6 @@ to init-car-log
   ]
   
 end
-
 
 ;Prameters: lastTarget cognestion-time cognestion-count longest-cognestion birthtime deathtime
 to log-car-death [lTgt cog-time cog-count max-cog birtht deatht]

@@ -15,21 +15,23 @@ to init-indian
 end
 
 to init-constant
-   ask light_1 [
+  ask junction_1 [set jc 24] ;geenwave 26 
+  ask light_1 [
     set color green
     set is_active true
   ]
-  ask junction_1 [set jc 24] ;geenwave 26 
+ 
+  ask junction_2 [set jc 11] ;; geenwave 12
   ask light_5 [
     set color green
     set is_active true
   ] 
-  ask junction_2 [set jc 11] ;; geenwave 12
+  
+  ask junction_3 [set jc 30] 
   ask light_7 [
     set color green
     set is_active true
   ] 
-  ask junction_3 [set jc 30] 
 end
 
 to init-traffic

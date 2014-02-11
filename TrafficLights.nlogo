@@ -7,17 +7,22 @@ __includes ["Shape2Logo.nls"
             ]
 
 globals [
-  tickcount
+avarage-cars-in-cognestion sum-car-cognestion-count 
+avarage-car-count sum-carcount 
 ]
 
 links-own [is_light part_of_junction next_light is_active]
 
 
 to go 
-  set tickcount (tickcount + 1)
+  tick
   jgo
   gocars
   if (random 100 < spawn-propabilty) [spawnCar]
+  set sum-car-cognestion-count ((count cars with [cognestion = true]) + sum-car-cognestion-count)
+  set avarage-cars-in-cognestion sum-car-cognestion-count / ticks
+  set sum-carcount (sum-carcount + carcount)
+  set avarage-car-count sum-carcount / ticks
 end
 
 to init
@@ -28,7 +33,6 @@ to init
   init-car-log
   ;initcars
 end
-
 
 @#$#@#$#@
 GRAPHICS-WINDOW
@@ -146,7 +150,7 @@ spawn-propabilty
 spawn-propabilty
 0
 100
-13
+26
 1
 1
 NIL
@@ -158,7 +162,7 @@ BUTTON
 479
 150
 kill cars in cognestion
-set carcount carcount - count cars with [cognestion = true]\nask cars with [cognestion = true] [die]
+set carcount carcount - count cars with [cognestion = true]\nask cars with [cognestion = true] [\n  log-car-death lastTarget cognestion-time cognestion-count longest-cognestion birthtime ticks\n  die\n]
 NIL
 1
 T
@@ -198,10 +202,10 @@ carcount
 11
 
 MONITOR
-130
-161
-250
-206
+129
+160
+249
+205
 NIL
 carsspawned
 17
@@ -215,17 +219,6 @@ MONITOR
 254
 cars in cognestion
 count cars with [cognestion = true]
-17
-1
-11
-
-MONITOR
-6
-160
-126
-205
-NIL
-tickcount
 17
 1
 11
@@ -248,9 +241,9 @@ NIL
 1
 
 BUTTON
-3
+-1
 747
-193
+189
 780
 NIL
 create-car-at node 38
@@ -457,10 +450,10 @@ sink13
 11
 
 MONITOR
-6
-209
-83
-254
+185
+256
+324
+301
 ~life-time
 sum-life-times / deadcars
 17
@@ -468,10 +461,10 @@ sum-life-times / deadcars
 11
 
 MONITOR
-252
-160
-326
-205
+251
+159
+325
+204
 NIL
 deadcars
 17
@@ -479,9 +472,9 @@ deadcars
 11
 
 MONITOR
-85
+185
 209
-165
+324
 254
 ~cog-time
 sum-cog-times / sum-cog-counts
@@ -496,6 +489,58 @@ MONITOR
 301
 NIL
 maximal-cog
+17
+1
+11
+
+PLOT
+5
+323
+205
+473
+plot 1
+NIL
+NIL
+0.0
+10.0
+0.0
+10.0
+true
+false
+"" ""
+PENS
+"default" 1.0 0 -16777216 true "" "plot (count cars with [cognestion = true])"
+"pen-1" 1.0 0 -2674135 true "" "plot carcount"
+
+MONITOR
+215
+423
+407
+468
+NIL
+avarage-cars-in-cognestion
+17
+1
+11
+
+MONITOR
+213
+323
+353
+368
+NIL
+avarage-car-count
+17
+1
+11
+
+MONITOR
+214
+373
+379
+418
+percentige of cars in cog
+precision (100 * avarage-cars-in-cognestion / avarage-car-count) (1)
 17
 1
 11
