@@ -1,10 +1,14 @@
-__includes ["Shape2Logo.nls" "junctionControl.nls" "cars.nls" "log.nls"]
+__includes ["Shape2Logo.nls" 
+            "junctionControl.nls" 
+            "cars.nls" 
+            "log.nls" 
+            "handyfunctionslib.nls"
+            "SzenarioRoads.nls"
+            ]
 
 globals [
-  junction_1 junction_2 junction_3
-  light_1 light_2 light_3 light_4 light_5 light_6 light_7 light_8
   tickcount
-  ]
+]
 
 links-own [is_light part_of_junction next_light is_active]
 
@@ -18,67 +22,13 @@ end
 
 to init
   init-roadnetwork
+  reset-ticks
+  
   junction-init
   init-car-log
   ;initcars
 end
 
-to init-roadnetwork
-  setup_roadnetwork
-  
-  ask patches [
-    set pcolor white
-  ]
-  
-  create-junctions 3 [
-    hide-turtle
-  ]
-  
-  set junction_1 item 0 sort junctions
-  set junction_2 item 1 sort junctions
-  set junction_3 item 2 sort junctions
-  
-  ask links [
-    set thickness 0.25
-    set color black
-    set is_light false  
-  ]
-  
-  ;junction 1:
-  set light_1 link  1  2
-  set light_2 link 28 29
-  ask junction_1 [set jc 15] 
-  ask junction_1 [set queue 0] 
-  
-  ;junction 2:
-  set light_3 link  5  6
-  set light_4 link 23 24
-  set light_5 link 37 24
-  ask junction_2 [set queue 0] 
-  
-  ;junction 3:
-  set light_6 link  8  9
-  set light_7 link 39 40
-  set light_8 link 20 21
-  ask junction_3 [set queue 0] 
-  
-  ask light_1 [set is_light true set part_of_junction junction_1 set next_light light_2]
-  ask light_2 [set is_light true set part_of_junction junction_1 set next_light light_1]
-  
-  ask light_3 [set is_light true set part_of_junction junction_2 set next_light light_4]
-  ask light_4 [set is_light true set part_of_junction junction_2 set next_light light_5]
-  ask light_5 [set is_light true set part_of_junction junction_2 set next_light light_3]
-  
-  ask light_6 [set is_light true set part_of_junction junction_3 set next_light light_7]
-  ask light_7 [set is_light true set part_of_junction junction_3 set next_light light_8]
-  ask light_8 [set is_light true set part_of_junction junction_3 set next_light light_6]
-  
-  ask links with [is_light] [
-    set color red
-    set is_active false
-  ]
-  reset-ticks
-end   
 
 @#$#@#$#@
 GRAPHICS-WINDOW
@@ -141,10 +91,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-307
-253
-480
-286
+305
+46
+478
+79
 jtt2
 jtt2
 0
@@ -156,10 +106,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-295
-470
-468
-503
+305
+81
+478
+114
 jtt3
 jtt3
 0
@@ -196,17 +146,17 @@ spawn-propabilty
 spawn-propabilty
 0
 100
-10
+13
 1
 1
 NIL
 HORIZONTAL
 
 BUTTON
-280
-426
-468
-459
+305
+117
+479
+150
 kill cars in cognestion
 set carcount carcount - count cars with [cognestion = true]\nask cars with [cognestion = true] [die]
 NIL
@@ -237,10 +187,10 @@ NIL
 1
 
 MONITOR
-372
-349
-491
-394
+327
+160
+446
+205
 cars on street
 carcount
 17
@@ -248,10 +198,10 @@ carcount
 11
 
 MONITOR
-372
-302
-492
-347
+130
+161
+250
+206
 NIL
 carsspawned
 17
@@ -259,10 +209,10 @@ carsspawned
 11
 
 MONITOR
-249
-349
-370
-394
+327
+209
+448
+254
 cars in cognestion
 count cars with [cognestion = true]
 17
@@ -270,10 +220,10 @@ count cars with [cognestion = true]
 11
 
 MONITOR
-249
-301
-369
-346
+6
+160
+126
+205
 NIL
 tickcount
 17
@@ -378,7 +328,7 @@ CHOOSER
 szenario
 szenario
 "indian" "constant" "traffic" "cooperativ"
-0
+1
 
 CHOOSER
 211
@@ -388,7 +338,7 @@ CHOOSER
 test-road
 test-road
 "AB" "CD" "EG" "FG" "HI"
-3
+1
 
 BUTTON
 358
@@ -417,6 +367,138 @@ roadtests
 1
 1
 -1000
+
+MONITOR
+1176
+613
+1233
+658
+NIL
+sink16
+17
+1
+11
+
+SWITCH
+140
+576
+280
+609
+gnerate-file
+gnerate-file
+1
+1
+-1000
+
+MONITOR
+708
+450
+765
+495
+NIL
+sink18
+17
+1
+11
+
+MONITOR
+562
+44
+619
+89
+NIL
+sink31
+17
+1
+11
+
+MONITOR
+515
+119
+572
+164
+NIL
+sink33
+17
+1
+11
+
+MONITOR
+814
+43
+871
+88
+NIL
+sink35
+17
+1
+11
+
+MONITOR
+970
+319
+1027
+364
+NIL
+sink36
+17
+1
+11
+
+MONITOR
+729
+706
+786
+751
+NIL
+sink13
+17
+1
+11
+
+MONITOR
+6
+209
+83
+254
+~life-time
+sum-life-times / deadcars
+17
+1
+11
+
+MONITOR
+252
+160
+326
+205
+NIL
+deadcars
+17
+1
+11
+
+MONITOR
+85
+209
+165
+254
+~cog-time
+sum-cog-times / sum-cog-counts
+17
+1
+11
+
+MONITOR
+328
+256
+424
+301
+NIL
+maximal-cog
+17
+1
+11
 
 @#$#@#$#@
 ## WHAT IS IT?

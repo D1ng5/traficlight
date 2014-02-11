@@ -1,0 +1,136 @@
+globals[
+  junction_1 junction_2 junction_3
+  light_1 light_2 light_3 light_4 light_5 light_6 light_7 light_8
+  Lin Lout mescars summestimes
+]
+
+to init-roadnetwork
+  setup_roadnetwork
+  
+  ask patches [
+    set pcolor white
+  ]
+  
+  create-junctions 3 [
+    hide-turtle
+  ]
+  
+  set junction_1 item 0 sort junctions
+  set junction_2 item 1 sort junctions
+  set junction_3 item 2 sort junctions
+  
+  ask links [
+    set thickness 0.25
+    set color black
+    set is_light false  
+  ]
+  
+  ;junction 1:
+  set light_1 link  1  2
+  set light_2 link 28 29
+  ask junction_1 [set jc 15] 
+  ask junction_1 [set queue 0] 
+  
+  ;junction 2:
+  set light_3 link  5  6
+  set light_4 link 23 24
+  set light_5 link 37 24
+  ask junction_2 [set queue 0] 
+  
+  ;junction 3:
+  set light_6 link  8  9
+  set light_7 link 39 40
+  set light_8 link 20 21
+  ask junction_3 [set queue 0] 
+  
+  ask light_1 [set is_light true set part_of_junction junction_1 set next_light light_2]
+  ask light_2 [set is_light true set part_of_junction junction_1 set next_light light_1]
+  
+  ask light_3 [set is_light true set part_of_junction junction_2 set next_light light_4]
+  ask light_4 [set is_light true set part_of_junction junction_2 set next_light light_5]
+  ask light_5 [set is_light true set part_of_junction junction_2 set next_light light_3]
+  
+  ask light_6 [set is_light true set part_of_junction junction_3 set next_light light_7]
+  ask light_7 [set is_light true set part_of_junction junction_3 set next_light light_8]
+  ask light_8 [set is_light true set part_of_junction junction_3 set next_light light_6]
+  
+  ask links with [is_light] [
+    set color red
+    set is_active false
+  ]
+end   
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;                      road tests
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+to init-road-test [road]
+  if road = "AB" [
+    inittest link  2  3 link  5  6
+    ask links [set color black]
+    ask (link 2 3) [set color yellow]
+    ask (link 3 4) [set color yellow]
+    ask (link 4 5) [set color yellow]
+    ask (link 5 6) [set color yellow]
+  ]
+  if road = "CD" [inittest link  6  7 link  8  9
+    ask links [set color black]
+    ask (link 6 7) [set color yellow]
+    ask (link 7 8) [set color yellow]
+    ask (link 8 9) [set color yellow]
+  ]
+  if road = "EG" [inittest link 40 21 link 23 24
+    ask links [set color black]
+    ask (link 21 22) [set color yellow]
+    ask (link 22 23) [set color yellow]
+    ask (link 23 24) [set color yellow]
+    ask (link 40 21) [set color yellow]
+    ]
+  if road = "FG" [inittest link 21 22 link 23 24
+    ask links [set color black]
+    ask (link 21 22) [set color yellow]
+    ask (link 22 23) [set color yellow]
+    ask (link 23 24) [set color yellow]
+    ]
+  if road = "HI" [inittest link 24 25 link 28 29
+    ask links [set color black]
+    ask (link 24 25) [set color yellow]
+    ask (link 25 26) [set color yellow]
+    ask (link 26 27) [set color yellow] 
+    ask (link 27 28) [set color yellow]
+    ask (link 28 29) [set color yellow]
+    ]
+  print word "inisalized mesuring for road: " road
+end
+
+to inittest [li lo]
+  set Lin li
+  set Lout lo
+  set mescars 0
+  set summestimes 0
+end 
+
+to inittestcar
+  set mes false
+  set fo false
+  set it 0
+  set ot 0
+end
+
+to testline
+  if (street = Lin and not mes) [
+      set mes true
+      set it tickcount
+  ]
+  if (street = Lout and not fo) [
+    set fo true    
+  ]
+  if (fo and (not (street = Lout))) [
+    set ot tickcount
+    print (word " mesured travel time = " (ot - it ) " ticks by (" who " " breed ") on road: " test-road) 
+    set mes false 
+    set fo false
+    set summestimes (summestimes + (ot - it))
+    set mescars (mescars + 1)
+  ]
+end

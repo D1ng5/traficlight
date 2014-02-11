@@ -1,0 +1,52 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;                        distances and positions
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+to-report euclidean_distance[x1 y1 x2 y2]
+  report sqrt ((x2 - x1) ^ 2 + (y2 - y1) ^ 2)
+end
+
+to-report d_euclidean[p1 p2]
+  report sqrt ((first p2 - first p1) ^ 2 + (last p2 - last p1) ^ 2)
+end
+
+to-report poslst
+  report list xcor ycor
+end
+
+to-report pos-of [thing]
+  report list ([xcor] of thing) ([ycor] of thing)
+end
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;                        day and time 2 String
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+to-report daytime [ops] 
+  ; current date and time in numerical format, yyyy-mm-dd
+  let dateandtime date-and-time
+  let $dt substring dateandtime 16 27  ; "21-May-2013"
+  let dt (word (substring $dt 7 11)           ; yyyy
+           "-" (month-num substring $dt 3 6)  ; mm
+           "-" (substring $dt 0 2) )          ; dd
+  let time (word (substring dateandtime 0 2)   ; h
+             ":" (substring dateandtime 3 5) ) ; m
+  ifelse (ops = "d") [
+    report dt
+  ];else
+  [
+    ifelse (ops = "t") [
+      report time
+    ];else (ops = "dt")
+    [
+      report (word dt "_" time)
+    ]
+    
+  ]
+end 
+
+to-report month-num [ #mon ]
+  let $index 1 + position #mon
+    ["Jan""Feb""Mar""Apr""May""Jun""Jul""Aug""Sep""Oct""Nov""Dec"]
+  report substring (word (100 + $index)) 1 3  ; force 2-digit string
+end 

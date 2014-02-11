@@ -1,63 +1,78 @@
-globals [log-car-file openfile]
+globals [
+  log-car-file openfile
+  sink13 sink16 sink18 sink31 sink33 sink35 sink36
+  maximal-cog sum-cog-times sum-cog-counts max-life-time sum-life-times deadcars
+]
+
+
 
 to init-car-log
-  let car-log-name (word "carlog-" (daytime "dt") ".csv")
-  ; für jeweiliges System einkommentieren
-  ; window system
-  ;set carlog (word "log\\" car-log-name)
-  ; linux System
-  set log-car-file (word "log/" car-log-name)
-  file-open log-car-file
-  file-print "deathtime ; birthtime ; lastTarget ; cognestion-count ; cognestion-time ; longest-cognestion"
+  if gnerate-file [
+    let car-log-name (word "carlog-" (daytime "dt") ".csv")
+    ; für jeweiliges System einkommentieren
+    ; window system
+    ;set log-car-file (word "log\\" car-log-name)
+    ; linux System
+    set log-car-file (word "log/" car-log-name)
+    file-open log-car-file
+    file-print "deathtime ; birthtime ; lastTarget ; cognestion-count ; cognestion-time ; longest-cognestion"
+  ]
+  
 end
 
 
 ;Prameters: lastTarget cognestion-time cognestion-count longest-cognestion birthtime deathtime
 to log-car-death [lTgt cog-time cog-count max-cog birtht deatht]
-  file-open log-car-file
-  file-print (word       deatht 
-                   " ; " birtht
-                   " ; " lTgt 
-                   " ; " cog-count
-                   " ; " cog-time
-                   " ; " max-cog
-              )
-  close
-end
-
-
-
-to close
-  file-close
-end
-
-
-
-to-report daytime [ops] 
-  ; current date and time in numerical format, yyyy-mm-dd
-  let dateandtime date-and-time
-  let $dt substring dateandtime 16 27  ; "21-May-2013"
-  let dt (word (substring $dt 7 11)           ; yyyy
-           "-" (month-num substring $dt 3 6)  ; mm
-           "-" (substring $dt 0 2) )          ; dd
-  let time (word (substring dateandtime 0 2)   ; h
-             ":" (substring dateandtime 3 5) ) ; m
-  ifelse (ops = "d") [
-    report dt
-  ];else
-  [
-    ifelse (ops = "t") [
-      report time
-    ];else (ops = "dt")
-    [
-      report (word dt "_" time)
-    ]
-    
+  set deadcars (deadcars + 1)
+  if (lTgt = node 13) [
+  set sink13 (sink13 + 1)
   ]
-end 
+  if (lTgt = node 16) [
+    set sink16 (sink16 + 1)
+  ]
+  if (lTgt = node 18) [
+    set sink18 (sink18 + 1)
+  ]
+  if (lTgt = node 31) [
+    set sink31 (sink31 + 1)
+  ]
+  if (lTgt = node 33) [
+    set sink33 (sink33 + 1)
+  ]
+  if (lTgt = node 35) [
+    set sink35 (sink35 + 1)
+  ]
+  if (lTgt = node 36) [
+    set sink36 (sink36 + 1)
+  ]
+  
+  if maximal-cog < max-cog [
+    set maximal-cog max-cog
+  ]
+  set sum-cog-counts (sum-cog-counts + cog-count)
+  set sum-cog-times (sum-cog-times + cog-time )
+  let lifet (deatht - birtht)
+  if max-life-time < lifet[
+    set max-life-time lifet
+  ]
+  set sum-life-times (sum-life-times + lifet )
+  
+  if gnerate-file [
+    file-open log-car-file
+    file-print (word       deatht 
+      " ; " birtht
+      " ; " lTgt 
+      " ; " cog-count
+      " ; " cog-time
+      " ; " max-cog
+      )
+    file-close
+  ]
+end
 
-to-report month-num [ #mon ]
-  let $index 1 + position #mon
-    ["Jan""Feb""Mar""Apr""May""Jun""Jul""Aug""Sep""Oct""Nov""Dec"]
-  report substring (word (100 + $index)) 1 3  ; force 2-digit string
-end 
+
+
+
+
+
+
