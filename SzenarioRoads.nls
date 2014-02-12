@@ -28,20 +28,22 @@ to init-roadnetwork
   ;junction 1:
   set light_1 link  1  2
   set light_2 link 28 29
-  
   ask junction_1 [set queue 0] 
+  ask junction_1 [set qpos light_1] 
   
   ;junction 2:
   set light_3 link  5  6
   set light_4 link 23 24
   set light_5 link 37 24
   ask junction_2 [set queue 0] 
+  ask junction_2 [set qpos light_3] 
   
   ;junction 3:
   set light_6 link  8  9
   set light_7 link 39 40
-  set light_8 link 20 21
+  set light_8 link 20 21 
   ask junction_3 [set queue 0] 
+  ask junction_3 [set qpos light_6] 
   
   ask light_1 [set is_light true set part_of_junction junction_1 set next_light light_2]
   ask light_2 [set is_light true set part_of_junction junction_1 set next_light light_1]

@@ -1,5 +1,5 @@
 breed [junctions junction]
-junctions-own [jc queue queuepos]
+junctions-own [jc queue qpos]
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;                          initialize
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -35,7 +35,19 @@ to init-constant
 end
 
 to init-traffic
-  
+    init-constant
+;  ask junction_1[
+;    set qpos light_1
+;    set queue 0
+;    ]
+;    ask junction_2[
+;    set qpos light_5
+;    set queue 0
+;    ]
+;    ask junction_3[
+;    set qpos light_7
+;    set queue 0
+;    ]
 end
 
 to init-cooperativ
@@ -72,7 +84,27 @@ to jt-constant
 end
 
 to jt-traffic
-
+  foreach sort junctions[
+    ask ?[
+      let q qpos
+      ifelse jc <= 1 [
+        set jc (get-jtt (?))
+        ask links with [part_of_junction = ?][
+          ifelse (myself = q)[
+            set is_active true
+            set color green
+          ];esle
+          [
+            set is_active false
+            set color red
+          ]
+        ]
+      ];else
+      [
+        set jc (jc - 1)
+      ]  
+    ]
+  ]   
 end
 
 to jt-cooperativ

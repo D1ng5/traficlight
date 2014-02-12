@@ -9,9 +9,9 @@ to init-car-log
     let car-log-name (word "carlog-" (daytime "dt") ".csv")
     ; für jeweiliges System einkommentieren
     ; window system
-    ;set log-car-file (word "log\\" car-log-name)
+    set log-car-file (word "log\\" car-log-name)
     ; linux System
-    set log-car-file (word "log/" car-log-name)
+    ;set log-car-file (word "log/" car-log-name)
     file-open log-car-file
     file-print "deathtime ; birthtime ; lastTarget ; cognestion-count ; cognestion-time ; longest-cognestion"
   ]

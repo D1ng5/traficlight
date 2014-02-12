@@ -182,29 +182,36 @@ to diecar
   ]
 end
 
-;to communicate [myheading]
-;  tellJunction
-;  ask ( other cars with [heading < myheading + 20 AND heading > myheading - 20] in-cone .5 40 )[
-;    set hopCount (hopCount + 1)
-;    print hopCount
-;    communicate(heading) 
-;  ]
-;end
-;
-;to tellJunction
-;  if (leader)[
-;    ;falls leder = true : setzte cogNr = hopCount
-;    ;die junktion 
-;    ; let a  street with part_of_junction)
-;    let a hopCount
-;    ask [part_of_junction] of street
-;      [
-;        set queue a
-;        ;set queuepos [part_of_junction] of street
-;      ]   
-;  ]  
-;end    
-;  
+to communicate
+  let myheading heading
+  
+    if (leader) [
+      if [is_light] of street [ 
+          ;Link ist ampel
+          if [is_active = false] of street [
+          tellJunction
+          ]  
+      ]
+  ]
+  
+  ask ( other cars with [heading < myheading + 20 AND heading > myheading - 20] in-cone .5 40 )[
+    set hopCount (hopCount + 1)
+    print hopCount
+    communicate 
+  ]
+end
+
+to tellJunction
+   let h hopCount
+   let q street
+    ask [part_of_junction] of street[
+      if (h > queue)[
+        
+        set queue h 
+        set qpos q
+      ]  
+    ]   
+end  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
