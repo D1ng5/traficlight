@@ -1,5 +1,5 @@
 globals [
-  carcount carsspawned
+  carcount carsspawned cars-that-couldnot-spawn
 ]
 
 breed [cars car]
@@ -63,7 +63,8 @@ to spawnCar
     ]
   ];else
   [
-    show "all startnodes full"
+    set cars-that-couldnot-spawn cars-that-couldnot-spawn + 1
+    ;show "all startnodes full"
   ]
 end
 
@@ -88,7 +89,8 @@ to create-car-at [spawnNode]
     ]
   ]
   [
-    print word "no space for creating a car at: " spawnNode
+    set cars-that-couldnot-spawn cars-that-couldnot-spawn + 1
+    ;print word "no space for creating a car at: " spawnNode
   ]
 end
 
@@ -206,7 +208,7 @@ end
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-to test
+to test-f
   let np (nextcors .2 heading)
   let r .1
   show count cars with [(((first np) - r) < xcor) and (xcor <((first np) + r)) and ( ((last np) - r) < ycor ) and ( ycor < ((last np) + r) )]

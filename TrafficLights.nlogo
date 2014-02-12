@@ -34,6 +34,55 @@ to init
   ;initcars
 end
 
+to test
+  let sp 10
+  let sz "indian"
+  let times 1000
+  let runs 10
+  
+  while [sp <= 100][
+   runtest runs times sz sp
+   set sp (sp + 10) 
+  ]
+end
+
+to runtest [runs times sz sp]
+  let r 1
+  print (word "szenario"
+        " ; " "test-nummer"
+        " ; " "spawn-propability"
+        " ; " "carsspawned"
+        " ; " "carsnotspawned"
+        " ; " "deadcars"
+        " ; " "~cog-time"
+        " ; " "%~cars-in-cog"
+        " ; " "~cars"
+        " ; " "~cars-in-cog"
+        " ; " "~life-time"
+    )
+  while [r <= runs][
+    set szenario sz
+    set spawn-propabilty sp
+    init
+    while [ticks < times ] [
+      go 
+    ]
+    let p (precision (100 * avarage-cars-in-cognestion / avarage-car-count) (1))
+    print (word sz
+      " ; \t" r
+      " ; \t" sp
+      " ; \t" carsspawned
+      " ; \t" cars-that-couldnot-spawn
+      " ; \t" deadcars
+      " ; \t" (sum-cog-times / sum-cog-counts)
+      " ; \t" p
+      " ; \t" avarage-car-count
+      " ; \t" avarage-cars-in-cognestion
+      " ; \t" (sum-life-times / deadcars)
+      )
+    set r r + 1
+  ]
+end 
 @#$#@#$#@
 GRAPHICS-WINDOW
 500
@@ -125,10 +174,10 @@ NIL
 HORIZONTAL
 
 BUTTON
-7
-66
-110
-100
+6
+62
+109
+96
 NIL
 spawnCar
 NIL
@@ -150,7 +199,7 @@ spawn-propabilty
 spawn-propabilty
 0
 100
-26
+100
 1
 1
 NIL
@@ -191,10 +240,10 @@ NIL
 1
 
 MONITOR
-327
-160
-446
-205
+389
+158
+479
+203
 cars on street
 carcount
 17
@@ -202,10 +251,10 @@ carcount
 11
 
 MONITOR
-129
-160
-249
-205
+216
+158
+319
+203
 NIL
 carsspawned
 17
@@ -213,10 +262,10 @@ carsspawned
 11
 
 MONITOR
-327
-209
-448
-254
+358
+205
+479
+250
 cars in cognestion
 count cars with [cognestion = true]
 17
@@ -321,7 +370,7 @@ CHOOSER
 szenario
 szenario
 "indian" "constant" "traffic" "cooperativ"
-1
+0
 
 CHOOSER
 211
@@ -450,10 +499,10 @@ sink13
 11
 
 MONITOR
-185
-256
-324
-301
+216
+252
+355
+297
 ~life-time
 sum-life-times / deadcars
 17
@@ -461,10 +510,10 @@ sum-life-times / deadcars
 11
 
 MONITOR
-251
-159
-325
-204
+321
+158
+386
+203
 NIL
 deadcars
 17
@@ -472,10 +521,10 @@ deadcars
 11
 
 MONITOR
-185
-209
-324
-254
+216
+205
+355
+250
 ~cog-time
 sum-cog-times / sum-cog-counts
 17
@@ -483,10 +532,10 @@ sum-cog-times / sum-cog-counts
 11
 
 MONITOR
-328
-256
-424
-301
+359
+252
+479
+297
 NIL
 maximal-cog
 17
@@ -515,7 +564,7 @@ PENS
 MONITOR
 215
 423
-407
+379
 468
 NIL
 avarage-cars-in-cognestion
@@ -526,7 +575,7 @@ avarage-cars-in-cognestion
 MONITOR
 213
 323
-353
+379
 368
 NIL
 avarage-car-count
@@ -544,6 +593,23 @@ precision (100 * avarage-cars-in-cognestion / avarage-car-count) (1)
 17
 1
 11
+
+BUTTON
+404
+420
+467
+453
+NIL
+test\n
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
 
 @#$#@#$#@
 ## WHAT IS IT?

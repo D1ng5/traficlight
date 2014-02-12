@@ -67,6 +67,10 @@ to log-car-death [lTgt cog-time cog-count max-cog birtht deatht]
   ]
 end
 
+to log-test
+  
+end
+
 
 
 
