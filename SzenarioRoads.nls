@@ -23,6 +23,7 @@ to init-roadnetwork
     set thickness 0.25
     set color black
     set is_light false  
+    set time 0
   ]
   
   ;junction 1:

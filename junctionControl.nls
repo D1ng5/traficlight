@@ -35,19 +35,18 @@ to init-constant
 end
 
 to init-traffic
-    init-constant
-;  ask junction_1[
-;    set qpos light_1
-;    set queue 0
-;    ]
-;    ask junction_2[
-;    set qpos light_5
-;    set queue 0
-;    ]
-;    ask junction_3[
-;    set qpos light_7
-;    set queue 0
-;    ]
+  ask junction_1[
+    set qpos light_1
+    set queue 0
+    ]
+    ask junction_2[
+    set qpos light_5
+    set queue 0
+    ]
+    ask junction_3[
+    set qpos light_7
+    set queue 0
+    ]
 end
 
 to init-cooperativ
@@ -89,8 +88,10 @@ to jt-traffic
       let q qpos
       ifelse jc <= 1 [
         set jc (get-jtt (?))
+        set queue 0
         ask links with [part_of_junction = ?][
-          ifelse (myself = q)[
+          ifelse (self = q)[
+            
             set is_active true
             set color green
           ];esle
@@ -108,7 +109,53 @@ to jt-traffic
 end
 
 to jt-cooperativ
-
+    foreach sort junctions[
+    ask ?[
+      let t 0
+      let pos qpos
+      let q queue
+      
+      ;;;;;;;;;;;;;;;;;;;;;;;;;;
+      ifelse jc <= 1 [
+          
+        
+        ask links with [part_of_junction = ?][
+          
+          set t time
+          
+          ifelse (self = pos)[
+            set is_active true
+            set color green
+            set time 0
+            
+            if (pos = light_1 and q > 5)[
+              ask light_3 [set time (time + 6)]
+            ]
+          
+            if ((pos = light_3 or pos = light_4 or pos = light_5) and q > 7)[
+              ask light_2 [set time (time + 6)]
+              ask light_6 [set time (time + 6)]
+            ]
+          
+            if ((pos = light_7 or pos = light_8) and q > 7)[ 
+              ask light_4 [set time (time + 6)]
+            ]
+            
+          ];esle
+          [
+            set is_active false
+            set color red
+          ]
+        ] 
+        print t
+        set jc ((get-jtt (?)) + t)
+      ];else
+      [
+        set jc (jc - 1)
+        
+      ]  
+    ] 
+  ] 
 end
  
  

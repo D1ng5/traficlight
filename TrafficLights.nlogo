@@ -11,7 +11,7 @@ avarage-cars-in-cognestion sum-car-cognestion-count
 avarage-car-count sum-carcount 
 ]
 
-links-own [is_light part_of_junction next_light is_active]
+links-own [is_light part_of_junction next_light is_active time]
 
 
 to go 
@@ -85,13 +85,13 @@ to runtest [runs times sz sp]
 end 
 @#$#@#$#@
 GRAPHICS-WINDOW
-500
-10
-1245
-776
+494
+11
+1164
+702
 16
 16
-22.3
+20.0
 1
 10
 1
@@ -137,7 +137,7 @@ jtt1
 jtt1
 0
 60
-30
+20
 1
 1
 NIL
@@ -152,7 +152,7 @@ jtt2
 jtt2
 0
 60
-30
+20
 1
 1
 NIL
@@ -167,7 +167,7 @@ jtt3
 jtt3
 0
 60
-30
+20
 1
 1
 NIL
@@ -199,7 +199,7 @@ spawn-propabilty
 spawn-propabilty
 0
 100
-20
+51
 1
 1
 NIL
@@ -370,7 +370,7 @@ CHOOSER
 szenario
 szenario
 "indian" "constant" "traffic" "cooperativ"
-0
+3
 
 CHOOSER
 211
