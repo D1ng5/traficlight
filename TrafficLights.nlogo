@@ -34,55 +34,9 @@ to init
   ;initcars
 end
 
-to test
-  let sp 10
-  let sz "indian"
-  let times 1000
-  let runs 10
-  
-  while [sp <= 100][
-   runtest runs times sz sp
-   set sp (sp + 10) 
-  ]
+to test 
+  test-indian
 end
-
-to runtest [runs times sz sp]
-  let r 1
-  print (word "szenario"
-        " ; " "test-nummer"
-        " ; " "spawn-propability"
-        " ; " "carsspawned"
-        " ; " "carsnotspawned"
-        " ; " "deadcars"
-        " ; " "~cog-time"
-        " ; " "%~cars-in-cog"
-        " ; " "~cars"
-        " ; " "~cars-in-cog"
-        " ; " "~life-time"
-    )
-  while [r <= runs][
-    set szenario sz
-    set spawn-propabilty sp
-    init
-    while [ticks < times ] [
-      go 
-    ]
-    let p (precision (100 * avarage-cars-in-cognestion / avarage-car-count) (1))
-    print (word sz
-      " ; \t" r
-      " ; \t" sp
-      " ; \t" carsspawned
-      " ; \t" cars-that-couldnot-spawn
-      " ; \t" deadcars
-      " ; \t" (sum-cog-times / sum-cog-counts)
-      " ; \t" p
-      " ; \t" avarage-car-count
-      " ; \t" avarage-cars-in-cognestion
-      " ; \t" (sum-life-times / deadcars)
-      )
-    set r r + 1
-  ]
-end 
 @#$#@#$#@
 GRAPHICS-WINDOW
 500
@@ -137,7 +91,7 @@ jtt1
 jtt1
 0
 60
-30
+0
 1
 1
 NIL
@@ -152,7 +106,7 @@ jtt2
 jtt2
 0
 60
-30
+0
 1
 1
 NIL
@@ -167,7 +121,7 @@ jtt3
 jtt3
 0
 60
-30
+0
 1
 1
 NIL
@@ -199,7 +153,7 @@ spawn-propabilty
 spawn-propabilty
 0
 100
-100
+6
 1
 1
 NIL
@@ -595,10 +549,10 @@ precision (100 * avarage-cars-in-cognestion / avarage-car-count) (1)
 11
 
 BUTTON
-404
-420
-467
-453
+75
+208
+138
+241
 NIL
 test\n
 NIL
@@ -610,6 +564,16 @@ NIL
 NIL
 NIL
 1
+
+CHOOSER
+282
+564
+374
+609
+System
+System
+"linux" "windows"
+0
 
 @#$#@#$#@
 ## WHAT IS IT?

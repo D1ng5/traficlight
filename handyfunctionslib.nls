@@ -30,7 +30,7 @@ to-report daytime [ops]
            "-" (month-num substring $dt 3 6)  ; mm
            "-" (substring $dt 0 2) )          ; dd
   let time (word (substring dateandtime 0 2)   ; h
-             ":" (substring dateandtime 3 5) ) ; m
+             "_" (substring dateandtime 3 5) ) ; m
   ifelse (ops = "d") [
     report dt
   ];else
@@ -39,7 +39,7 @@ to-report daytime [ops]
       report time
     ];else (ops = "dt")
     [
-      report (word dt "_" time)
+      report (word dt "__" time)
     ]
     
   ]

@@ -11,7 +11,14 @@ to junction-init
 end
 
 to init-indian
-  ask links with [is_light = true][set color black set is_active true]
+  ask links with [is_light = true][
+    set color black 
+    set is_active true
+    
+  ]
+  set jtt1 0
+  set jtt2 0
+  set jtt3 0
 end
 
 to init-constant
