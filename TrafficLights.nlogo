@@ -137,7 +137,7 @@ jtt1
 jtt1
 0
 60
-20
+21
 1
 1
 NIL
@@ -152,7 +152,7 @@ jtt2
 jtt2
 0
 60
-20
+21
 1
 1
 NIL
@@ -167,7 +167,7 @@ jtt3
 jtt3
 0
 60
-20
+22
 1
 1
 NIL
@@ -199,7 +199,7 @@ spawn-propabilty
 spawn-propabilty
 0
 100
-51
+37
 1
 1
 NIL
