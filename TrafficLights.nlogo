@@ -11,7 +11,7 @@ avarage-cars-in-cognestion sum-car-cognestion-count
 avarage-car-count sum-carcount 
 ]
 
-links-own [is_light part_of_junction next_light is_active]
+links-own [is_light part_of_junction next_light is_active time]
 
 
 to go 
@@ -39,13 +39,13 @@ to test
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
-500
-10
-1245
-776
+494
+11
+1164
+702
 16
 16
-22.3
+20.0
 1
 10
 1
@@ -92,6 +92,7 @@ jtt1
 0
 60
 0
+21
 1
 1
 NIL
@@ -106,7 +107,7 @@ jtt2
 jtt2
 0
 60
-0
+21
 1
 1
 NIL
@@ -121,7 +122,7 @@ jtt3
 jtt3
 0
 60
-0
+22
 1
 1
 NIL
@@ -153,7 +154,7 @@ spawn-propabilty
 spawn-propabilty
 0
 100
-6
+37
 1
 1
 NIL
@@ -324,7 +325,7 @@ CHOOSER
 szenario
 szenario
 "indian" "constant" "traffic" "cooperativ"
-0
+3
 
 CHOOSER
 211
@@ -918,7 +919,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.0.5
+NetLogo 5.0.4
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

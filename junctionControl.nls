@@ -1,5 +1,5 @@
 breed [junctions junction]
-junctions-own [jc queue queuepos]
+junctions-own [jc queue qpos]
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;                          initialize
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -42,11 +42,22 @@ to init-constant
 end
 
 to init-traffic
-  
+  ask junction_1[
+    set qpos light_1
+    set queue 0
+    ]
+    ask junction_2[
+    set qpos light_5
+    set queue 0
+    ]
+    ask junction_3[
+    set qpos light_7
+    set queue 0
+    ]
 end
 
 to init-cooperativ
-
+  init-traffic
 end
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -79,11 +90,84 @@ to jt-constant
 end
 
 to jt-traffic
-
+  foreach sort junctions[
+    ask ?[
+      let pos qpos
+      ifelse jc <= 1 [
+        set jc (get-jtt (?))
+        set queue 0
+        ask links with [part_of_junction = ?][
+          ifelse (self = pos)[
+            
+            set is_active true
+            set color green
+          ];esle
+          [
+            set is_active false
+            set color red
+          ]
+        ]
+      ];else
+      [
+        set jc (jc - 1)
+      ]  
+    ]
+  ]   
 end
 
-to jt-cooperativ
 
+
+to jt-cooperativ
+    foreach sort junctions[
+    ask ?[
+      let t 0
+      let pos qpos
+      let q queue
+      
+      ;;;;;;;;;;;;;;;;;;;;;;;;;;
+      ifelse jc <= 1 [
+          
+        ;set jc (get-jtt (?))
+        set queue 0
+        ask links with [part_of_junction = ?][
+          
+          
+          ifelse (self = pos)[
+            
+            set t time
+            set is_active true
+            set color green
+            set time 0
+            
+            if (self = light_1 and q > 3)[
+              ask light_3 [set time (time + 6)]
+            ]
+          
+            if ((self = light_3 or self = light_4 or self = light_5) and q > 5)[
+              ask light_2 [set time (time + 6)]
+              ask light_6 [set time (time + 6)]
+            ]
+          
+            if ((self = light_7 or self = light_8) and q > 5)[ 
+              ask light_4 [set time (time + 6)]
+            ]
+            
+          ];esle
+          [
+            set is_active false
+            set color red
+          ]
+        ] 
+        print ((get-jtt (?)) + t)
+        
+        set jc ((get-jtt (?)) + t)
+      ];else
+      [
+        set jc (jc - 1)
+        
+      ]  
+    ] 
+  ] 
 end
  
  

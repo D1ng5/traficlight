@@ -96,10 +96,19 @@ end
 
 to gocars
   ask cars [
+      if (leader) [
+      if [is_light] of street [ 
+        ;Link ist ampel
+        if [is_active = false] of street [
+            tellJunction
+        ]  
+      ]
+  ]
     if roadtests [testline]
     diecar
     ifelse (count cars-ahead > 0)
     [
+      set leader false
       handle-car-ahead
     ];else kein Stau
     [
@@ -115,6 +124,7 @@ to gocars
           ];else die ampel ist rot
           [
             stopcar
+            set leader true
           ]
         ];else Link ist keine Ampel
         [
@@ -135,7 +145,7 @@ to handle-car-ahead
     move 
   ] 
   [
-    set leader false
+    ;set leader false
     stopcar
   ]
 end
@@ -158,6 +168,9 @@ end
 
 to stopcar
   if (not cognestion) [
+    if (szenario = "traffic" or szenario = "cooperativ")[
+      communicate
+    ]
    ; communicate heading
     set cognestion true
     set cognestion-count (cognestion-count + 1)
@@ -182,29 +195,36 @@ to diecar
   ]
 end
 
-;to communicate [myheading]
-;  tellJunction
-;  ask ( other cars with [heading < myheading + 20 AND heading > myheading - 20] in-cone .5 40 )[
-;    set hopCount (hopCount + 1)
-;    print hopCount
-;    communicate(heading) 
+to communicate
+  let myheading heading
+  
+;  if (leader) [
+;      if [is_light] of street [ 
+;        ;Link ist ampel
+;        if [is_active = false] of street [
+;            tellJunction
+;        ]  
+;      ]
 ;  ]
-;end
-;
-;to tellJunction
-;  if (leader)[
-;    ;falls leder = true : setzte cogNr = hopCount
-;    ;die junktion 
-;    ; let a  street with part_of_junction)
-;    let a hopCount
-;    ask [part_of_junction] of street
-;      [
-;        set queue a
-;        ;set queuepos [part_of_junction] of street
-;      ]   
-;  ]  
-;end    
-;  
+  
+  ask ( other cars with [heading < myheading + 20 AND heading > myheading - 20] in-cone .5 40 )[
+    set hopCount (hopCount + 1)
+    ;print hopCount
+    communicate 
+  ]
+end
+
+to tellJunction
+   let h hopCount
+   let q street
+    ask [part_of_junction] of street[
+      if (h > queue)[
+        
+        set queue h 
+        set qpos q
+      ]  
+    ]   
+end  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
